@@ -32,6 +32,7 @@ def checksum(msg):
 
 
 nw,mask=sys.argv[1].split('/')
+interface=sys.argv[2]
 
 def arpmonitor():
     try:
@@ -51,7 +52,7 @@ def arpmonitor():
     bigpct=0
     #s.bind(('enp4s0',0))
     #s.bind(('enp3s0',0))
-    s.bind(('eno1',0))
+    s.bind((interface,0))
 
     start_time = time.time()
     lsend=[]
@@ -77,7 +78,7 @@ def arpmonitor():
 
         if eth[2] == 0x0806 :
             #print("ARP Packet")
-            npacotesarp=npacotesarp+1
+            #npacotesarp=npacotesarp+1
             arp_header = packet[eth_length:28+eth_length]
             arph = struct.unpack("!HHBBHIH4sHI4s",arp_header)
             #print("len de arph "+str(len(arph)))
@@ -125,7 +126,7 @@ def icmpmonitor():
     bigpct=0
     #s.bind(('enp4s0',0))
     #s.bind(('enp3s0',0))
-    s.bind(('eno1',0))
+    s.bind((interface,0))
 
     start_time = time.time()
     lsend=[]
@@ -220,7 +221,7 @@ if(nw[0:-1]==myip[0:len(nw)-1]):#so aceitamos redes terminando em 0
 
     print('Socket created!')
     #s.bind(('enp4s0',0))
-    s.bind(('eno1',0))
+    s.bind((interface,0))
     
     # Header Ethernet
     # MAC Destino - 6 bytes
@@ -327,7 +328,7 @@ else:#rede externa
         s.sendto(ip_header+icmp_packet, (dest_addr,0))
     t1.join()
     senders,targets=que.get()
-
+    
     for a in senders:
         
         print("O IP "+str(a[0])+" está ativo")

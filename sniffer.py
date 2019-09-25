@@ -4,7 +4,7 @@ import struct
 import time
 
 ETH_P_ALL = 0x0003
-
+interface=sys.argv[1]
 def bytes_to_mac(bytesmac):
     return ":".join("{:02x}".format(x) for x in bytesmac)
 
@@ -25,13 +25,13 @@ smallpct=100000
 bigpct=0
 #s.bind(('enp4s0',0))
 #s.bind(('enp3s0',0))
-s.bind(('eno1',0))
+s.bind((interface,0))
 try:    
     start_time = time.time()
     lsend=[]
     ldest=[]
-    start_time = time.time()
-    while(time.time()-start_time<5.0):
+    
+    while(True):
         (packet,addr) = s.recvfrom(65536)
         if(len(packet)>bigpct):
             bigpct=len(packet)
@@ -154,6 +154,7 @@ try:
             print("IP Dst: "+d_addr)
         print("")
 except KeyboardInterrupt:
+        print("")
         print("Finalizando")
         print("Numero de pacotes monitorados "+str(npacotes))
         print("Porcentagem de pacotes IP "+str(100*(npacotesip/npacotes)))

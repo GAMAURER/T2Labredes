@@ -110,10 +110,10 @@ try:
                 if(icmpt==0):#echoreply
                     print("Echo Reply")
                     er_header = packet[28+eth_length:28+eth_length+8]
-                    erh= struct.unpack("!HH4s",er_header)
+                    erh= struct.unpack("!HHBBBB",er_header)
                     print("Identifier "+ str(erh[0]))
                     print("Sequence Number "+ str(erh[1]))
-                    print("Payload " +str(erh[2]))#arrumar
+                    print("Payload " +str(chr(erh[2]))+str(chr(erh[3]))+str(chr(erh[4]))+str(chr(erh[5])))#arrumar
 
                 elif(icmpt==8):#echorequest
                     print("Echo Request")
@@ -130,20 +130,14 @@ try:
             print("ARP Packet")
             npacotesarp=npacotesarp+1
             arp_header = packet[eth_length:28+eth_length]
-            arph = struct.unpack("!HHBBH6s4s6s4s",arp_header)
+            arph = struct.unpack("!HHBBHIH4sHI4s",arp_header)
             print("len de arph "+str(len(arph)))
             if(arph[4]==1):
                 print("request")
             else:
                 print("reply")
-            
-            s_mac=bytes_to_mac(arph[5])
-            print("MAC src: "+str(s_mac))
-            
-            d_mac=bytes_to_mac(arph[7])
-            print("MAC dst: "+str(d_mac))
-            s_addr = socket.inet_ntoa(arph[6])
-            d_addr = socket.inet_ntoa(arph[8])
+            s_addr = socket.inet_ntoa(arph[7])
+            d_addr = socket.inet_ntoa(arph[10])
             present=0
             for a in lsend:
                 if(a[0]==s_addr):

@@ -23,6 +23,7 @@ npacotestcp=0
 npacotesudp=0
 smallpct=100000
 bigpct=0
+totaltraffic=0
 #s.bind(('enp4s0',0))
 #s.bind(('enp3s0',0))
 s.bind((interface,0))
@@ -33,6 +34,7 @@ try:
     
     while(True):
         (packet,addr) = s.recvfrom(65536)
+        totaltraffic= totaltraffic + len(packet)
         if(len(packet)>bigpct):
             bigpct=len(packet)
         if(len(packet)<smallpct):
@@ -156,7 +158,9 @@ try:
 except KeyboardInterrupt:
         print("")
         print("Finalizando")
+        
         print("Numero de pacotes monitorados "+str(npacotes))
+        print("Total de bytes recebidos: "+str(totaltraffic))
         print("Porcentagem de pacotes IP "+str(100*(npacotesip/npacotes)))
         print("Porcentagem de pacotes ARP "+str(100*(npacotesarp/npacotes)))
         print("Porcentagem de pacotes TCP "+str(100*(npacotestcp/npacotes)))
@@ -169,6 +173,7 @@ except KeyboardInterrupt:
         ldest.sort(key=lambda tup: tup[1])
         print("IPs que mais enviaram "+str(lsend[-5:]))
         print("IPs que mais receberam "+str(ldest[-5:]))
+        
 
         print("Tempo total de monitoramento "+str(time.time() - start_time))
 

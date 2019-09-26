@@ -32,7 +32,7 @@ def checksum(msg):
 
 
 nw,mask=sys.argv[1].split('/')
-interface=sys.argv[2]
+interface=sys.argv[4]
 
 def arpmonitor():
     try:
@@ -256,8 +256,9 @@ if(nw[0:-1]==myip[0:len(nw)-1]):#so aceitamos redes terminando em 0
     senders,targets=que.get()
 
     for a in senders:
-        
-        print("O IP "+str(a[0])+" está ativo")
+        if(a[0][0:len(nw)-1]==nw[:-1]):
+            print("O IP "+str(a[0])+" está ativo")
+    print("Existem "+str(len(senders))+" maquinas ativas nesta rede")
 else:#rede externa
     print("Rede externa")
     t1=threading.Thread(target=lambda q: q.put(icmpmonitor()), args=(que,))
@@ -322,7 +323,7 @@ else:#rede externa
 
         # icmp_packet = struct.pack("!BBHHH14s", type, code, mychecksum, identifier, seqnumber, payload)
 
-        dest_ip = "10.32.143.194"
+        dest_ip = nw[0:-1]+str(i)
         dest_addr = socket.gethostbyname(dest_ip)
 
         s.sendto(ip_header+icmp_packet, (dest_addr,0))
@@ -330,6 +331,7 @@ else:#rede externa
     senders,targets=que.get()
     
     for a in senders:
+        if(a[0][0:len(nw)-1]==nw[:-1]):
         
-        print("O IP "+str(a[0])+" está ativo")
-
+            print("O IP "+str(a[0])+" está ativo")
+    print("Existem "+str(len(senders))+" maquinas ativas nesta rede")

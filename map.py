@@ -90,7 +90,7 @@ def tcpmonitor():
                 tcph= struct.unpack("!HH",tcp_header)
                 #print(s_addr[0:len(nw)])
                 #print(nw[:-1])
-                if(s_addr[0:len(nw)-1]==nw[:-1]):
+                if(s_addr[0:len(nw)-1]==nw[:-1] and tcph[0]>=int(smallport) and tcph[0]<int(bigport)):
                 #if(True):
                     print("Porta "+str(tcph[0])+" do IP "+str(s_addr)+" Está aberta")
     return
@@ -114,7 +114,7 @@ def arpmonitor():
     lsend=[]
     ldest=[]
     start_time = time.time()
-    while(time.time()-start_time<5.0):
+    while(time.time()-start_time<3.0):
         (packet,addr) = s.recvfrom(65536)
 
         eth_length = 14
@@ -145,7 +145,7 @@ def arpmonitor():
                     a[1]=a[1]+1
                     present=1
             if present==0:
-                lsend.append(list((s_addr,1)))
+                lsend.append(list((s_addr,1,bytes_to_mac(eth[1]))))
             present=0
             for a in ldest:
                 if(a[0]==d_addr):
@@ -275,7 +275,7 @@ def icmpmonitor():
     lsend=[]
     ldest=[]
     start_time = time.time()
-    while(time.time()-start_time<5.0):
+    while(time.time()-start_time<3.0):
         (packet,addr) = s.recvfrom(65536)
 
         
@@ -328,7 +328,7 @@ def icmpmonitor():
                             present=1
                     if present==0:
                         
-                        lsend.append(list((s_addr,1)))
+                        lsend.append(list((s_addr,1,time.time()-start_time-1)))
                     
                     
                     present=0
@@ -395,7 +395,7 @@ if(nw[0:-1]==myip[0:len(nw)-1]):#so aceitamos redes terminando em 0
 
     for a in senders:
         if(a[0][0:len(nw)-1]==nw[:-1]):
-            print("O IP "+str(a[0])+" está ativo")
+            print("O IP "+str(a[0])+" está ativo e possui o MAC "+str(a[2]))
     print("Existem "+str(len(senders))+" maquinas ativas nesta rede")
     tcpsender(senders)
 else:#rede externa
@@ -464,7 +464,7 @@ else:#rede externa
     for a in senders:
         if(a[0][0:len(nw)-1]==nw[:-1]):
         
-            print("O IP "+str(a[0])+" está ativo")
+            print("O IP "+str(a[0])+" está ativo e o seu RTT foi de "+str(a[2])+" segundos")
     print("Existem "+str(len(senders))+" maquinas ativas nesta rede")
     tcpsender(senders)
 

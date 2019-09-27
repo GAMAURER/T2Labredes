@@ -113,7 +113,7 @@ try:
                     erh= struct.unpack("!HH4s",er_header)
                     print("Identifier "+ str(erh[0]))
                     print("Sequence Number "+ str(erh[1]))
-                    print("Payload " +str(erh[2]))#arrumar
+                    print("Payload " +str(erh[2].decode('ascii')))#arrumar
 
                 elif(icmpt==8):#echorequest
                     print("Echo Request")

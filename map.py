@@ -54,7 +54,7 @@ def tcpmonitor():
     lsend=[]
     ldest=[]
     
-    while(time.time()-start_time<5.0):
+    while(time.time()-start_time<300.0):
         (packet,addr) = s.recvfrom(65536)
 
 
@@ -83,13 +83,13 @@ def tcpmonitor():
   
 
             if(protocol==6):#TCP
-                print("TCP")
+                #print("TCP")
                 
                 
                 tcp_header = packet[20+eth_length:20+eth_length+4]
                 tcph= struct.unpack("!HH",tcp_header)
-                print(s_addr[0:len(nw)])
-                print(nw[:-1])
+                #print(s_addr[0:len(nw)])
+                #print(nw[:-1])
                 if(s_addr[0:len(nw)-1]==nw[:-1]):
                 #if(True):
                     print("Porta "+str(tcph[0])+" do IP "+str(s_addr)+" Está aberta")
@@ -186,41 +186,40 @@ def tcpsender(ips):
         sys.exit()
     for ipdest in ips: 
         for j in range(int(smallport),int(bigport)):
-            # tell kernel not to put in headers, since we are providing it
+            
             s.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
 
-            # now start constructing the packet
             packet = ''
 
             source_ip = myip
-            dest_ip = ipdest[0] # or socket.gethostbyname('www.google.com')
+            dest_ip = ipdest[0] 
 
-            # ip header fields
+           
             ihl = 5
             version = 4
             tos = 0
             tot_len = 20
-            id = 54321  #Id of this packet
+            id = 54321  
             frag_off = 0
             ttl = 255
             protocol = socket.IPPROTO_TCP
-            check = 10  # python seems to correctly fill the checksum
-            saddr = socket.inet_aton ( source_ip )  #Spoof the source ip address if you want to
+            check = 10  
+            saddr = socket.inet_aton ( source_ip )  
             daddr = socket.inet_aton ( dest_ip )
 
             ihl_version = (version << 4) + ihl
 
-            # the ! in the pack format string means network order
+           
             ip_header = struct.pack('!BBHHHBBH4s4s' , ihl_version, tos, tot_len, id, frag_off, ttl, protocol, check, saddr, daddr)
 
 
-            # tcp header fields
-            source = 12345  # source port
-            dest = j  # destination port
+            
+            source = 12345  
+            dest = j  
             seq = 0
             ack_seq = 0
-            doff = 5    #4 bit field, size of tcp header, 5 * 4 = 20 bytes
-            #tcp flags
+            doff = 5    
+            
             fin = 0
             syn = 1
             rst = 0
@@ -229,17 +228,17 @@ def tcpsender(ips):
             urg = 0
             window = socket.htons (5840)
 
-            #maximum allowed window size
+            
             check = 0
             urg_ptr = 0
 
             offset_res = (doff << 4) + 0
             tcp_flags = fin + (syn << 1) + (rst << 2) + (psh <<3) + (ack << 4) + (urg << 5)
 
-            # the ! in the pack format string means network order
+            
             tcp_header = struct.pack('!HHLLBBHHH' , source, dest, seq, ack_seq, offset_res, tcp_flags,  window, check, urg_ptr)
 
-            # pseudo header fields for checksum calcs
+           
             source_address = socket.inet_aton( source_ip )
             dest_address = socket.inet_aton(dest_ip)
             placeholder = 0
@@ -251,14 +250,13 @@ def tcpsender(ips):
 
             tcp_checksum = checksumtcp(psh)
 
-            # make the tcp header again and fill the correct checksum
+            
             tcp_header = struct.pack('!HHLLBBHHH' , source, dest, seq, ack_seq, offset_res, tcp_flags,  window, tcp_checksum , urg_ptr)
 
-            # final full packet - syn packets dont have any data
+            
             packet = ip_header + tcp_header
 
-            #Send the packet finally - the port specified has no effect
-            s.sendto(packet, (dest_ip , 0 ))    # put this in a loop if you want to flood the target
+            s.sendto(packet, (dest_ip , 0 ))    
     return
 
 

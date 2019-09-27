@@ -113,7 +113,8 @@ try:
                     erh= struct.unpack("!HH4s",er_header)
                     print("Identifier "+ str(erh[0]))
                     print("Sequence Number "+ str(erh[1]))
-                    print("Payload " +str(erh[2].decode('ascii')))#arrumar
+                    #arrumar
+                    print(packet[28+eth_length+8:].decode('Cp1252'))
 
                 elif(icmpt==8):#echorequest
                     print("Echo Request")
@@ -125,6 +126,7 @@ try:
                     print("Destination unreachable")
                 elif(icmpt==11):#timeexceeded
                     print("Time Exceeded")
+                print(packet[28+eth_length+8:].decode('Cp1252'))
 
         if eth[2] == 0x0806 :
             print("ARP Packet")

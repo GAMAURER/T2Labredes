@@ -1,4 +1,5 @@
 # T2 Laboratório de Redes de Computadores
+Autor: Guilherme A. Maurer
 
 ## Monitorador Passivo
 

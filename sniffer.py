@@ -70,7 +70,7 @@ try:
                     a[1]=a[1]+1
                     present=1
             if present==0:
-                print("present = 0 ")
+                
                 lsend.append(list((s_addr,1)))
             
             print("IP Dst: "+d_addr)

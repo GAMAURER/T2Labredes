@@ -20,7 +20,7 @@ def checksum(msg):
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
 except socket.error:
-    print 'Socket could not be created. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+    print('Socket could not be created. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
     sys.exit()
 for j in [21,23,80]:
     # tell kernel not to put in headers, since we are providing it
@@ -29,8 +29,8 @@ for j in [21,23,80]:
     # now start constructing the packet
     packet = ''
 
-    source_ip = '192.168.100.160'
-    dest_ip = '192.168.100.115' # or socket.gethostbyname('www.google.com')
+    source_ip = '192.168.15.9'
+    dest_ip = '201.54.156.1' # or socket.gethostbyname('www.google.com')
 
     # ip header fields
     ihl = 5
